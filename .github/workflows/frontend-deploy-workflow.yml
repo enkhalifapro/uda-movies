@@ -81,10 +81,23 @@ jobs:
 
       - name: Login ECR
         run: |
-          aws ecr describe-repositories
           aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username AWS --password-stdin ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com
 
       - name: Push Docker image to Amazon ECR
         run: |
           docker tag frontend:${{ github.sha }} ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/frontend:${{ github.sha }}
           docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/frontend:${{ github.sha }}
+
+
+      - name: Update k8s Deployment
+        run: |
+          # setup kustomize
+          curl -sSL https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize%2Fv4.5.7/kustomize_v4.5.7_linux_amd64.tar.gz -o kustomize.tar.gz
+          tar -xzvf kustomize.tar.gz
+          sudo mv kustomize /usr/local/bin/
+          
+          # update deployment
+          cd starter/backend/k8s
+          kustomize edit set image backend=${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/frontend:${{ github.sha }}
+          kustomize build | kubectl apply -f -
+          
