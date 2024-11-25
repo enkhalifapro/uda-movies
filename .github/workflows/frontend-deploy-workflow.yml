@@ -52,17 +52,26 @@ jobs:
           docker buildx build --load --tag my-image:${{ github.sha }} .
         working-directory: ./starter/frontend
 
-#  push:
-#    runs-on: ubuntu-latest
-#
-#    steps:
-#      - name: Check out repository
-#        uses: actions/checkout@v3
-#
-#      - name: Configure AWS credentials
-#        uses: actions/configure-aws-credentials@v2
-#        with:
-#          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-#          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+  push:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v3
+
+      - name: Configure AWS credentials
+        uses: actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 #          aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
-#          aws-region: us-east-1
+          aws-region: secrets.AWS_REGION
+
+      - name: Log in to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+
+      - name: Push Docker image to Amazon ECR
+        run: |
+          docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/frontend:${{ github.sha }}
+          docker push 952662370353.dkr.ecr.us-east-1.amazonaws.com/frontend"
