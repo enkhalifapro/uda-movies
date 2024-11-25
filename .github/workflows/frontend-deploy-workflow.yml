@@ -71,11 +71,6 @@ jobs:
         run: |
           gunzip -c downloaded-artifact/frontend.tar.gz | docker load
 
-      #      - name: Log in to Amazon ECR
-      #        id: login-ecr
-      #        uses: aws-actions/amazon-ecr-login@v1
-      #        with:
-      #          region: ${{ secrets.AWS_REGION }}
 
       - name: Set up AWS CLI
         uses: aws-actions/configure-aws-credentials@v1
@@ -87,6 +82,12 @@ jobs:
       - name: Push Docker image to Amazon ECR
         run: |
           aws ecr describe-repositories
+          aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username AWS --password-stdin ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com
+          docker image ls
+#          docker tag my-app:latest 123456789012.dkr.ecr.us-west-2.amazonaws.com/my-app:latest
+
+
+
 
       - name: Push Docker image to Amazon ECR
         run: |
