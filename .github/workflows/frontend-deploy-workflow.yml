@@ -37,28 +37,20 @@ jobs:
 #      - test
 
     steps:
-      - name: Check out repository
-        uses: actions/checkout@v3
-
-      - name: Use Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: latest
-
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
       - name: Build Docker image
         run: |
-          docker buildx build --load --tag frontend-image:${{ github.sha }} .
+          docker buildx build --load --tag frontend:${{ github.sha }} .
         working-directory: ./starter/frontend
       - name: Save Docker image to archive
         run: |
           mkdir -p build
-          docker save frontend-image:${{ github.sha }} | gzip > build/frontend-image.tar.gz
+          docker save frontend:${{ github.sha }} | gzip > build/frontend.tar.gz
       - name: Upload Docker image artifact
         uses: actions/upload-artifact@v4
         with:
-         name: frontend-image
+         name: frontend
          path: build/
 
   push:
@@ -66,23 +58,35 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+
       - name: Download Docker image artifact
         uses: actions/download-artifact@v4
         with:
-          name: frontend-image
+          name: frontend
           path: ./downloaded-artifact
 
       - name: Load Docker image from archive
         run: |
-          gunzip -c downloaded-artifact/frontend-image.tar.gz | docker load
+          gunzip -c downloaded-artifact/frontend.tar.gz | docker load
 
-      - name: Log in to Amazon ECR
-        id: login-ecr
-        uses: aws-actions/amazon-ecr-login@v1
+#      - name: Log in to Amazon ECR
+#        id: login-ecr
+#        uses: aws-actions/amazon-ecr-login@v1
+#        with:
+#          region: ${{ secrets.AWS_REGION }}
+
+      - name: Set up AWS CLI
+        uses: aws-actions/configure-aws-credentials@v1
         with:
-          region: ${{ secrets.AWS_REGION }}
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
 
       - name: Push Docker image to Amazon ECR
         run: |
-          docker tag frontend-image:${{ github.sha }} ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/frontend:${{ github.sha }}
-          docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/frontend:${{ github.sha }}
+          aws ecr describe-repositories
+
+#      - name: Push Docker image to Amazon ECR
+#        run: |
+#          docker tag frontend:${{ github.sha }} ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/frontend:${{ github.sha }}
+#          docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/frontend:${{ github.sha }}
