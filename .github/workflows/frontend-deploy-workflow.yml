@@ -75,7 +75,9 @@ jobs:
       - name: Load Docker image from archive
         run: |
           ls
-#          gunzip -c frontend-image.tar.gz | docker load
+          cd downloaded-artifact
+          ls
+          gunzip -c downloaded-artifact/frontend-image.tar.gz | docker load
 
       - name: Log in to Amazon ECR
         id: login-ecr
