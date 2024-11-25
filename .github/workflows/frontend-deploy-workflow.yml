@@ -69,7 +69,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: docker-image
-          path: frontend.tar.gz
+          path: frontend-image.tar.gz
 
       - name: Load Docker image from archive
         run: |
