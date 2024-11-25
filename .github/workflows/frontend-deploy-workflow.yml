@@ -55,7 +55,7 @@ jobs:
         run: | 
           docker save my-image:${{ github.sha }} | gzip > my-image.tar.gz
       - name: Upload Docker image artifact
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
          name: docker-image
          path: frontend-image.tar.gz
@@ -66,7 +66,7 @@ jobs:
 
     steps:
       - name: Download Docker image artifact
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v4
         with:
           name: docker-image
           path: frontend.tar.gz
