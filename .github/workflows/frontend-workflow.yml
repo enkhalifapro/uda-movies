@@ -19,5 +19,7 @@ jobs:
         with:
           node-version: 18
       - name: Lint
-        run: npm run lint
+        run: |
+          npm install
+          npm run lint
         working-directory: ./starter/frontend
