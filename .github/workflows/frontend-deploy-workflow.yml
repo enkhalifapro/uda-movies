@@ -49,6 +49,7 @@ jobs:
         uses: docker/setup-buildx-action@v2
       - name: Build Docker image
         run: |
+          mkdir -p build
           docker buildx build --load --tag frontend-image:${{ github.sha }} .
         working-directory: ./starter/frontend
       - name: Save Docker image to archive
