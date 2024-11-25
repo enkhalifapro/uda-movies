@@ -53,12 +53,12 @@ jobs:
         working-directory: ./starter/frontend
       - name: Save Docker image to archive
         run: | 
-          docker save frontend-image:${{ github.sha }} | gzip > frontend-image.tar.gz
+          docker save frontend-image:${{ github.sha }} | gzip > build/frontend-image.tar.gz
       - name: Upload Docker image artifact
         uses: actions/upload-artifact@v4
         with:
-         name: docker-image
-         path: frontend-image.tar.gz
+         name: frontend-image
+         path: build/
 
   push:
     needs: build_docker_image
@@ -68,8 +68,8 @@ jobs:
       - name: Download Docker image artifact
         uses: actions/download-artifact@v4
         with:
-          name: docker-image
-          path: frontend-image.tar.gz
+          name: frontend-image
+          path: downloaded-artifact/
 
       - name: Load Docker image from archive
         run: |
