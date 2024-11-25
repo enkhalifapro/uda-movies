@@ -49,11 +49,11 @@ jobs:
         uses: docker/setup-buildx-action@v2
       - name: Build Docker image
         run: |
-          mkdir -p build
           docker buildx build --load --tag frontend-image:${{ github.sha }} .
         working-directory: ./starter/frontend
       - name: Save Docker image to archive
-        run: | 
+        run: |
+          mkdir -p build
           docker save frontend-image:${{ github.sha }} | gzip > build/frontend-image.tar.gz
       - name: Upload Docker image artifact
         uses: actions/upload-artifact@v4
