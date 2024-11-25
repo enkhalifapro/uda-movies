@@ -56,7 +56,7 @@ jobs:
           name: frontend
           path: build/
 
-  push:
+  deploy:
     needs: build_docker_image
     runs-on: ubuntu-latest
 
@@ -97,7 +97,7 @@ jobs:
           sudo mv kustomize /usr/local/bin/
           
           # update deployment
-          cd starter/backend/k8s
+          cd starter/frontend/k8s
           kustomize edit set image backend=${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/frontend:${{ github.sha }}
           kustomize build | kubectl apply -f -
           
