@@ -14,7 +14,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Check out repository xx
+      - name: Check out repository
         uses: actions/checkout@v3
 
       - name: Use Node.js
@@ -31,7 +31,7 @@ jobs:
           npm run lint
         working-directory: ./starter/frontend
 
-  build:
+  build_docker_image:
     runs-on: ubuntu-latest
     needs:
       - test
@@ -50,10 +50,6 @@ jobs:
       - name: Build Docker image
         run: |
           docker buildx build --load --tag my-image:${{ github.sha }} .
-        working-directory: ./starter/frontend
-      - name: Test
-        run: |
-          npm run lint
         working-directory: ./starter/frontend
 
 #  push:
