@@ -57,7 +57,7 @@ jobs:
           path: build/
 
   deploy:
-    needs: build_docker_image
+#    needs: build_docker_image
     runs-on: ubuntu-latest
 
     steps:
