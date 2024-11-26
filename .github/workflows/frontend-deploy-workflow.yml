@@ -102,7 +102,7 @@ jobs:
 
       - name: Testsssss
         run: |
-          aws eks --region us-east-1 update-kubeconfig --name my-cluster
+          aws eks --region us-east-1 update-kubeconfig --name cluster
           kubectl config get-contexts
           kubectl get nodes
 
