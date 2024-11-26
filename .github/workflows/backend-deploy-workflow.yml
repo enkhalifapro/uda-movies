@@ -45,7 +45,7 @@ jobs:
         run: pipenv run test
         working-directory: ./starter/backend
 
-  build_docker_image:
+  build:
     runs-on: ubuntu-latest
     needs:
       - lint
@@ -72,7 +72,7 @@ jobs:
           path: build/
 
   deploy:
-    needs: build_docker_image
+    needs: build
     runs-on: ubuntu-latest
 
     steps:
