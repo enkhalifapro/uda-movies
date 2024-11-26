@@ -102,6 +102,7 @@ jobs:
 
       - name: Testsssss
         run: |
+          aws eks --region us-east-1 update-kubeconfig --name my-cluster
           kubectl config get-contexts
 
       - name: Update k8s Deployment
