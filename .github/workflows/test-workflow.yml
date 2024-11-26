@@ -32,4 +32,4 @@ jobs:
 
       - name: Test kubectl connection
         run: |
-          kubectl get nodes
+          kubectl get pods
