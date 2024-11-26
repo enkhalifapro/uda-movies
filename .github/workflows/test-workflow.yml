@@ -28,7 +28,7 @@ jobs:
 
       - name: Set up kubectl config
         run: |
-          aws eks update-kubeconfig --name ${{ secrets.EKS_CLUSTER }} --region ${{ secrets.AWS_REGION }}
+          aws eks update-kubeconfig --name cluster --region ${{ secrets.AWS_REGION }}
 
       - name: Test kubectl connection
         run: |
