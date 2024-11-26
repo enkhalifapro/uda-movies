@@ -1,11 +1,11 @@
 name: Frontend Deploy Workflow
 
 on:
-  pull_request:
+  push:
     branches:
       - main
     paths:
-      - 'starter/frontend'
+      - 'starter/frontend/**'
   workflow_dispatch:
 
 jobs:
