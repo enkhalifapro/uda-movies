@@ -24,7 +24,8 @@ jobs:
         working-directory: ./starter/backend
 
       - name: Run flake8
-        run: pipenv run flake8 your-directory  # Run flake8 using pipenv
+        run: pipenv run flake8 .  # Run flake8 using pipenv
+        working-directory: ./starter/backend
         ##############
 #      - name: Use Node.js
 #        uses: actions/setup-node@v3
