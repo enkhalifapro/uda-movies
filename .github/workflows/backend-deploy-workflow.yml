@@ -82,13 +82,12 @@ jobs:
       - name: Download Docker image artifact
         uses: actions/download-artifact@v4
         with:
-          name: frontend
+          name: backend
           path: ./downloaded-artifact
 
       - name: Load Docker image from archive
         run: |
           gunzip -c downloaded-artifact/backend.tar.gz | docker load
-
 
       - name: Set up AWS CLI
         uses: aws-actions/configure-aws-credentials@v1
@@ -103,7 +102,7 @@ jobs:
 
       - name: Push Docker image to Amazon ECR
         run: |
-          docker tag backend:${{ github.sha }} ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/frontend:${{ github.sha }}
+          docker tag backend:${{ github.sha }} ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/backend:${{ github.sha }}
           docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/backend:${{ github.sha }}
 
       - name: Install kubectl
@@ -125,6 +124,6 @@ jobs:
       - name: Update k8s Deployment
         run: |
           cd starter/backend/k8s
-          kustomize edit set image backend=${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/frontend:${{ github.sha }}
+          kustomize edit set image backend=${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/backend:${{ github.sha }}
           kustomize build | kubectl apply -f -
 
