@@ -98,7 +98,7 @@ jobs:
           aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws_region: ${{ secrets.AWS_REGION }}
-          cluster_name: ${{ secrets.EKS_CLUSTER }}
+          cluster_name: cluster
 
       - name: Testsssss
         run: |
