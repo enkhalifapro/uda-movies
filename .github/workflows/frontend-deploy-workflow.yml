@@ -64,15 +64,15 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v3
 
-      - name: Download Docker image artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: frontend
-          path: ./downloaded-artifact
-
-      - name: Load Docker image from archive
-        run: |
-          gunzip -c downloaded-artifact/frontend.tar.gz | docker load
+#      - name: Download Docker image artifact
+#        uses: actions/download-artifact@v4
+#        with:
+#          name: frontend
+#          path: ./downloaded-artifact
+#
+#      - name: Load Docker image from archive
+#        run: |
+#          gunzip -c downloaded-artifact/frontend.tar.gz | docker load
 
 
       - name: Set up AWS CLI
