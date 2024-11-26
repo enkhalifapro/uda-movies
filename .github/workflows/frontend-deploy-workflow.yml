@@ -64,15 +64,15 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v3
 
-#      - name: Download Docker image artifact
-#        uses: actions/download-artifact@v4
-#        with:
-#          name: frontend
-#          path: ./downloaded-artifact
-#
-#      - name: Load Docker image from archive
-#        run: |
-#          gunzip -c downloaded-artifact/frontend.tar.gz | docker load
+      - name: Download Docker image artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: frontend
+          path: ./downloaded-artifact
+
+      - name: Load Docker image from archive
+        run: |
+          gunzip -c downloaded-artifact/frontend.tar.gz | docker load
 
 
       - name: Set up AWS CLI
@@ -86,37 +86,30 @@ jobs:
         run: |
           aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username AWS --password-stdin ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com
 
-#      - name: Push Docker image to Amazon ECR
-#        run: |
-#          docker tag frontend:${{ github.sha }} ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/frontend:${{ github.sha }}
-#          docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/frontend:${{ github.sha }}
-
-
-      - name: Deploy
-        uses: safe2008/eks-actions@v0.0.4
-        env:
-          aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws_region: ${{ secrets.AWS_REGION }}
-          cluster_name: cluster
-
-      - name: Testsssss
+      - name: Push Docker image to Amazon ECR
         run: |
-          aws eks --region us-east-1 update-kubeconfig --name cluster
-          kubectl config get-contexts
-          kubectl get pods
+          docker tag frontend:${{ github.sha }} ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/frontend:${{ github.sha }}
+          docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/frontend:${{ github.sha }}
+
+
+      - name: Install kubectl
+        run: |
+          curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+          chmod +x ./kubectl
+          sudo mv ./kubectl /usr/local/bin/kubectl
+
+      - name: Set up kubectl config
+        run: |
+          aws eks update-kubeconfig --name cluster --region ${{ secrets.AWS_REGION }}
+
+      - name: Install Kustomize
+        run: |
+          curl -sSL https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize%2Fv4.5.7/kustomize_v4.5.7_linux_amd64.tar.gz -o kustomize.tar.gz
+          tar -xzvf kustomize.tar.gz
+          mv kustomize /usr/local/bin/
 
       - name: Update k8s Deployment
         run: |
-          # setup kustomize
-          kubectl get nodes
-#          curl -sSL https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize%2Fv4.5.7/kustomize_v4.5.7_linux_amd64.tar.gz -o kustomize.tar.gz
-#          tar -xzvf kustomize.tar.gz
-#          sudo mv kustomize /usr/local/bin/
-          
-          # update deployment
-
-#          cd starter/frontend/k8s
-#          kustomize edit set image frontend=${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/frontend:${{ github.sha }}
-#          kustomize build | kubectl apply -f -
-          
+          cd starter/frontend/k8s
+          kustomize edit set image frontend=${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/frontend:${{ github.sha }}
+          kustomize build | kubectl apply -f -
