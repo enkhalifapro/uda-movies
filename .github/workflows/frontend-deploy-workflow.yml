@@ -104,8 +104,8 @@ jobs:
           
           # update deployment
           aws eks --region ${{ secrets.AWS_REGION }} update-kubeconfig --name ${{ secrets.EKS_CLUSTER }}
-
-          cd starter/frontend/k8s
-          kustomize edit set image frontend=${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/frontend:${{ github.sha }}
-          kustomize build | kubectl apply -f -
+          kubectl get nodes
+#          cd starter/frontend/k8s
+#          kustomize edit set image frontend=${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/frontend:${{ github.sha }}
+#          kustomize build | kubectl apply -f -
           
