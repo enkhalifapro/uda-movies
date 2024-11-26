@@ -1,11 +1,11 @@
 name: Backend Build Workflow
 
 on:
-  push:
+  pull_request:
     branches:
       - main
-#    paths:
-#      - 'starter/backend/**'
+    paths:
+      - 'starter/backend/**'
   workflow_dispatch:
 
 jobs:
