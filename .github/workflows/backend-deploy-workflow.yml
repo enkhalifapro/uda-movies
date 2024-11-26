@@ -1,4 +1,4 @@
-name: Backend Build Workflow
+name: Backend Deploy Workflow
 
 on:
   push:
