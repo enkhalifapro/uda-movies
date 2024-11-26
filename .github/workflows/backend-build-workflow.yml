@@ -56,5 +56,5 @@ jobs:
         uses: docker/setup-buildx-action@v2
       - name: Build Docker image
         run: |
-          docker buildx build --load --tag frontend:${{ github.sha }} .
+          docker buildx build --load --tag backend:${{ github.sha }} .
         working-directory: ./starter/backend
