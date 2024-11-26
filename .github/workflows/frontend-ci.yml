@@ -25,15 +25,11 @@ jobs:
       - name: Cache node modules
         id: cache-npm
         uses: actions/cache@v3
-        env:
-          cache-name: cache-node-modules
         with:
           path: ~/.npm
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
+          key: ${{ runner.os }}-npm-${{ hashFiles('**/package-lock.json') }}
           restore-keys: |
-            ${{ runner.os }}-build-${{ env.cache-name }}-
-            ${{ runner.os }}-build-
-            ${{ runner.os }}-
+            ${{ runner.os }}-npm-
 
       - name: Install dependencies
         run: npm install
@@ -56,13 +52,23 @@ jobs:
         with:
           node-version: latest
 
+      - uses: actions/checkout@v4
+      - name: Cache node modules
+        id: cache-npm
+        uses: actions/cache@v3
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-npm-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-npm-
+
       - name: Install dependencies
         run: npm install
         working-directory: ./starter/frontend
 
       - name: Test
         run: |
-          npm run lint
+          npm run test
         working-directory: ./starter/frontend
 
   build:
@@ -79,6 +85,16 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: latest
+
+      - uses: actions/checkout@v4
+      - name: Cache node modules
+        id: cache-npm
+        uses: actions/cache@v3
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-npm-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-npm-
 
       - name: Install dependencies
         run: npm install
