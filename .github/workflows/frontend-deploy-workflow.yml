@@ -102,7 +102,7 @@ jobs:
 
       - name: Testsssss
         run: |
-          kubectl get nodes
+          kubectl config get-contexts
 
       - name: Update k8s Deployment
         run: |
