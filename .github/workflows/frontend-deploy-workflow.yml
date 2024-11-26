@@ -105,8 +105,8 @@ jobs:
         uses: azure/setup-kubectl@v2
         with:
           version: 'latest'
-        run: |
-          aws eks --region us-east-1 update-kubeconfig --name cluster
+#        run: |
+#          aws eks --region us-east-1 update-kubeconfig --name cluster
 
       - name: Update k8s Deployment
         run: |
